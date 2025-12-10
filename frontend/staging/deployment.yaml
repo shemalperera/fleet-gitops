@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: fleet-frontend
-        image: muhammedsafry/fleet-management-front-end:latest
+        image: muhammedsafry/fleet-management-front-end:13
         ports:
         - containerPort: 3000
 
