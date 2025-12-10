@@ -1,0 +1,67 @@
+# Maintenance Service - Production Environment
+serviceName: maintenance-service
+namespace: fleet-management-prod
+replicaCount: 3
+
+image:
+  repository: maintenance-service
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 5001
+  targetPort: 5001
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+env:
+  FLASK_ENV: production
+  FLASK_APP: run.py
+  PORT: "5001"
+  HOST: "0.0.0.0"
+  CORS_ORIGINS: "*"
+  AUTH_DISABLED: "false"
+  OIDC_ISSUER: "https://keycloak.fleet-management.example.com/realms/fleet-management"
+  DATABASE_URL: "postgresql://postgres:postgres@postgres-maintenance:5432/maintenance_db"
+
+database:
+  enabled: true
+  name: postgres-maintenance
+  image: postgres:16
+  port: 5432
+  storage: 10Gi
+  env:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_DB: maintenance_db
+
+healthCheck:
+  enabled: true
+  path: /health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+  host: api.fleet-management.example.com
+  path: /api/maintenance
+  tls:
+    enabled: true
+    secretName: maintenance-service-prod-tls

@@ -1,0 +1,91 @@
+# ArgoCD Application - Driver Service (Production)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: driver-service-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: main
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/prod/driver-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-prod
+  syncPolicy:
+    # Manual sync for production
+    syncOptions:
+      - CreateNamespace=true
+---
+# ArgoCD Application - Maintenance Service (Production)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maintenance-service-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: main
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/prod/maintenance-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-prod
+  syncPolicy:
+    # Manual sync for production
+    syncOptions:
+      - CreateNamespace=true
+---
+# ArgoCD Application - Vehicle Service (Production)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vehicle-service-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: main
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/prod/vehicle-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-prod
+  syncPolicy:
+    # Manual sync for production
+    syncOptions:
+      - CreateNamespace=true
+---
+# ArgoCD Application - Frontend (Production)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: frontend-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: main
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/prod/frontend-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-prod
+  syncPolicy:
+    # Manual sync for production
+    syncOptions:
+      - CreateNamespace=true

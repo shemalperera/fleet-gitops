@@ -1,0 +1,53 @@
+# Development Environment - Frontend Values
+replicaCount: 1
+
+image:
+  repository: frontend
+  tag: dev
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+  hosts:
+    - host: frontend-dev.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: frontend-dev-tls
+      hosts:
+        - frontend-dev.example.com
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+env:
+  NODE_ENV: development
+  NEXT_TELEMETRY_DISABLED: "1"
+  # Add your dev-specific environment variables here
+  # API_URL: "http://vehicle-service-dev:8080"
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

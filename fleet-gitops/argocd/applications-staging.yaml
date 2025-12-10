@@ -1,0 +1,99 @@
+# ArgoCD Application - Driver Service (Staging)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: driver-service-staging
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: staging
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/staging/driver-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# ArgoCD Application - Maintenance Service (Staging)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maintenance-service-staging
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: staging
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/staging/maintenance-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# ArgoCD Application - Vehicle Service (Staging)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vehicle-service-staging
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: staging
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/staging/vehicle-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# ArgoCD Application - Frontend (Staging)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: frontend-staging
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: staging
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/staging/frontend-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

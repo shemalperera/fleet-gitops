@@ -1,0 +1,54 @@
+# Maintenance Service - Development Environment
+serviceName: maintenance-service
+namespace: fleet-management-dev
+replicaCount: 1
+
+image:
+  repository: maintenance-service
+  tag: dev
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 5001
+  targetPort: 5001
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+env:
+  FLASK_ENV: development
+  FLASK_APP: run.py
+  PORT: "5001"
+  HOST: "0.0.0.0"
+  CORS_ORIGINS: "*"
+  AUTH_DISABLED: "true"
+  DATABASE_URL: "postgresql://postgres:postgres@postgres-maintenance:5432/maintenance_db"
+
+database:
+  enabled: true
+  name: postgres-maintenance
+  image: postgres:16
+  port: 5432
+  storage: 1Gi
+  env:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_DB: maintenance_db
+
+healthCheck:
+  enabled: true
+  path: /health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+autoscaling:
+  enabled: false
+
+ingress:
+  enabled: false

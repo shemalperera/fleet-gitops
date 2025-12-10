@@ -1,0 +1,99 @@
+# ArgoCD Application - Driver Service (Dev)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: driver-service-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: deployment
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/dev/driver-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# ArgoCD Application - Maintenance Service (Dev)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maintenance-service-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: deployment
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/dev/maintenance-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# ArgoCD Application - Vehicle Service (Dev)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vehicle-service-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: deployment
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/dev/vehicle-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# ArgoCD Application - Frontend (Dev)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: frontend-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shemalperera/fleet-management-backend.git
+    targetRevision: deployment
+    path: fleet-gitops/charts/fleet-service
+    helm:
+      valueFiles:
+        - ../../envs/dev/frontend-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-management-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
