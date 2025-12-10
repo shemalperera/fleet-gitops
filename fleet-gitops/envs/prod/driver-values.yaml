@@ -1,0 +1,68 @@
+# Driver Service - Production Environment
+serviceName: driver-service
+namespace: fleet-management-prod
+replicaCount: 3
+
+image:
+  repository: driver-service
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 6001
+  targetPort: 6001
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+env:
+  SPRING_PROFILES_ACTIVE: production
+  SERVER_PORT: "6001"
+  AUTH_DISABLED: "false"
+  OIDC_ISSUER_URI: "https://keycloak.fleet-management.example.com/realms/fleet-management"
+  DB_HOST: postgres-driver
+  DB_PORT: "5432"
+  DB_NAME: driver_db
+  DB_USERNAME: postgres
+  DB_PASSWORD: postgres
+
+database:
+  enabled: true
+  name: postgres-driver
+  image: postgres:16
+  port: 5432
+  storage: 10Gi
+  env:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_DB: driver_db
+
+healthCheck:
+  enabled: true
+  path: /swagger-ui/index.html
+  initialDelaySeconds: 60
+  periodSeconds: 10
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+  host: api.fleet-management.example.com
+  path: /api/drivers
+  tls:
+    enabled: true
+    secretName: driver-service-prod-tls

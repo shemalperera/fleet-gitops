@@ -1,0 +1,66 @@
+# Driver Service - Staging Environment
+serviceName: driver-service
+namespace: fleet-management-staging
+replicaCount: 2
+
+image:
+  repository: driver-service
+  tag: staging
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 6001
+  targetPort: 6001
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+env:
+  SPRING_PROFILES_ACTIVE: staging
+  SERVER_PORT: "6001"
+  AUTH_DISABLED: "true"
+  DB_HOST: postgres-driver
+  DB_PORT: "5432"
+  DB_NAME: driver_db
+  DB_USERNAME: postgres
+  DB_PASSWORD: postgres
+
+database:
+  enabled: true
+  name: postgres-driver
+  image: postgres:16
+  port: 5432
+  storage: 5Gi
+  env:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_DB: driver_db
+
+healthCheck:
+  enabled: true
+  path: /swagger-ui/index.html
+  initialDelaySeconds: 60
+  periodSeconds: 10
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 75
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+  host: staging-api.fleet-management.example.com
+  path: /api/drivers
+  tls:
+    enabled: true
+    secretName: driver-service-staging-tls

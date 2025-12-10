@@ -1,0 +1,65 @@
+# Vehicle Service - Production Environment
+serviceName: vehicle-service
+namespace: fleet-management-prod
+replicaCount: 3
+
+image:
+  repository: vehicle-service
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 7001
+  targetPort: 8080
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+env:
+  ASPNETCORE_ENVIRONMENT: Production
+  ASPNETCORE_URLS: "http://+:8080"
+  CORS_ORIGINS: "*"
+  AUTH_DISABLED: "false"
+  Authentication__JwtBearer__Authority: "https://keycloak.fleet-management.example.com/realms/fleet-management"
+  ConnectionStrings__DefaultConnection: "Host=postgres-vehicle;Port=5432;Database=vehicle_db;Username=postgres;Password=postgres"
+
+database:
+  enabled: true
+  name: postgres-vehicle
+  image: postgres:16
+  port: 5432
+  storage: 10Gi
+  env:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_DB: vehicle_db
+
+healthCheck:
+  enabled: true
+  path: /health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+  host: api.fleet-management.example.com
+  path: /api/vehicles
+  tls:
+    enabled: true
+    secretName: vehicle-service-prod-tls

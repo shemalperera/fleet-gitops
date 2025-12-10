@@ -1,0 +1,56 @@
+# Default values for fleet-service
+# This is overridden by service-specific values files
+
+serviceName: ""
+namespace: default
+replicaCount: 1
+
+image:
+  repository: ""
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+env: {}
+
+database:
+  enabled: false
+  name: ""
+  image: postgres:16
+  port: 5432
+  storage: 1Gi
+  env: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  host: ""
+  path: /
+  tls:
+    enabled: false
+    secretName: ""
+
+healthCheck:
+  enabled: true
+  path: /health
+  initialDelaySeconds: 30
+  periodSeconds: 10

@@ -1,0 +1,65 @@
+# Maintenance Service - Staging Environment
+serviceName: maintenance-service
+namespace: fleet-management-staging
+replicaCount: 2
+
+image:
+  repository: maintenance-service
+  tag: staging
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 5001
+  targetPort: 5001
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+env:
+  FLASK_ENV: staging
+  FLASK_APP: run.py
+  PORT: "5001"
+  HOST: "0.0.0.0"
+  CORS_ORIGINS: "*"
+  AUTH_DISABLED: "true"
+  DATABASE_URL: "postgresql://postgres:postgres@postgres-maintenance:5432/maintenance_db"
+
+database:
+  enabled: true
+  name: postgres-maintenance
+  image: postgres:16
+  port: 5432
+  storage: 5Gi
+  env:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_DB: maintenance_db
+
+healthCheck:
+  enabled: true
+  path: /health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 75
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+  host: staging-api.fleet-management.example.com
+  path: /api/maintenance
+  tls:
+    enabled: true
+    secretName: maintenance-service-staging-tls

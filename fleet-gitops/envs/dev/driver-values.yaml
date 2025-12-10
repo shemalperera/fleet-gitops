@@ -1,0 +1,55 @@
+# Driver Service - Development Environment
+serviceName: driver-service
+namespace: fleet-management-dev
+replicaCount: 1
+
+image:
+  repository: driver-service
+  tag: dev
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 6001
+  targetPort: 6001
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+env:
+  SPRING_PROFILES_ACTIVE: development
+  SERVER_PORT: "6001"
+  AUTH_DISABLED: "true"
+  DB_HOST: postgres-driver
+  DB_PORT: "5432"
+  DB_NAME: driver_db
+  DB_USERNAME: postgres
+  DB_PASSWORD: postgres
+
+database:
+  enabled: true
+  name: postgres-driver
+  image: postgres:16
+  port: 5432
+  storage: 1Gi
+  env:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_DB: driver_db
+
+healthCheck:
+  enabled: true
+  path: /swagger-ui/index.html
+  initialDelaySeconds: 60
+  periodSeconds: 10
+
+autoscaling:
+  enabled: false
+
+ingress:
+  enabled: false
