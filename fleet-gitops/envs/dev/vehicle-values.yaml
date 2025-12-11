@@ -4,9 +4,9 @@ namespace: fleet-management-dev
 replicaCount: 1
 
 image:
-  repository: vehicle-service
-  tag: dev
-  pullPolicy: Always
+  repository: shemalperera/fleet-mgt-app-vehicle-service
+  tag: "1.0"
+  pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP

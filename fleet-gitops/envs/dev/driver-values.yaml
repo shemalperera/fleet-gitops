@@ -1,12 +1,12 @@
 # Driver Service - Development Environment
 serviceName: driver-service
-namespace: fleet-management-dev
+namespace: fleet-dev
 replicaCount: 1
 
 image:
-  repository: driver-service
-  tag: dev
-  pullPolicy: Always
+  repository: shemalperera/fleet-mgt-app-driver-service
+  tag: "1.0"
+  pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
