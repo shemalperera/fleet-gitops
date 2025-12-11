@@ -4,9 +4,9 @@ namespace: fleet-management-dev
 replicaCount: 1
 
 image:
-  repository: maintenance-service
-  tag: dev
-  pullPolicy: Always
+  repository: shemalperera/fleet-mgt-app-maintenance-service
+  tag: "1.0"
+  pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
