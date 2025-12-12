@@ -1,17 +1,17 @@
-# Maintenance Service - Development Environment
-serviceName: maintenance-service
+# Vehicle Service - Development Environment
+serviceName: vehicle-service
 namespace: fleet-dev
 replicaCount: 1
 
 image:
-  repository: shemalperera/fleet-mgt-app-maintenance-service
+  repository: shemalperera/fleet-mgt-app-vehicle-service
   tag: "1.0"
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
-  port: 5001
-  targetPort: 5001
+  port: 7001       # service port inside cluster
+  targetPort: 8080 # container port (ASP.NET listens here)
 
 resources:
   limits:
@@ -22,26 +22,24 @@ resources:
     memory: 128Mi
 
 env:
-  FLASK_ENV: development
-  FLASK_APP: run.py
-  PORT: "5001"
-  HOST: "0.0.0.0"
+  ASPNETCORE_ENVIRONMENT: Development
+  ASPNETCORE_URLS: "http://+:8080"
   CORS_ORIGINS: "*"
   AUTH_DISABLED: "true"
-  # App connects to Postgres on 5432 (inside the cluster)
-  DATABASE_URL: "postgresql://postgres:postgres@postgres-maintenance:5432/maintenance_db"
+  # App connects to Postgres service on standard 5432
+  ConnectionStrings__DefaultConnection: "Host=postgres-vehicle;Port=5432;Database=vehicle_db;Username=postgres;Password=postgres"
 
 database:
   enabled: true
-  name: postgres-maintenance
+  name: postgres-vehicle
   image: postgres:16
-  # Make Postgres listen on 5432 in the pod (like in docker-compose)
+  # Make Postgres listen on 5432 inside the pod (same as docker container)
   port: 5432
   storage: 1Gi
   env:
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
-    POSTGRES_DB: maintenance_db
+    POSTGRES_DB: vehicle_db
 
 healthCheck:
   enabled: true

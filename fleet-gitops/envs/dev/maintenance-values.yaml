@@ -1,6 +1,6 @@
 # Maintenance Service - Development Environment
 serviceName: maintenance-service
-namespace: fleet-management-dev
+namespace: fleet-dev
 replicaCount: 1
 
 image:
@@ -28,12 +28,14 @@ env:
   HOST: "0.0.0.0"
   CORS_ORIGINS: "*"
   AUTH_DISABLED: "true"
+  # App connects to Postgres on 5432 (inside the cluster)
   DATABASE_URL: "postgresql://postgres:postgres@postgres-maintenance:5432/maintenance_db"
 
 database:
   enabled: true
   name: postgres-maintenance
   image: postgres:16
+  # Make Postgres listen on 5432 in the pod (like in docker-compose)
   port: 5432
   storage: 1Gi
   env:
