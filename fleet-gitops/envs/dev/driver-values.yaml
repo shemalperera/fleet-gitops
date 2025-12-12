@@ -26,7 +26,7 @@ env:
   SERVER_PORT: "6001"
   AUTH_DISABLED: "true"
   DB_HOST: postgres-driver
-  DB_PORT: "5432"
+  DB_PORT: "5432"      # Spring app connects to service on 5432
   DB_NAME: driver_db
   DB_USERNAME: postgres
   DB_PASSWORD: postgres
@@ -35,7 +35,7 @@ database:
   enabled: true
   name: postgres-driver
   image: postgres:16
-  port: 5432
+  port: 5432           # Make Postgres listen on 5432 in the pod (like docker)
   storage: 1Gi
   env:
     POSTGRES_USER: postgres
